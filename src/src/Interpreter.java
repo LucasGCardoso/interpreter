@@ -6,8 +6,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static jdk.nashorn.internal.runtime.JSType.isNumber;
 
+/**
+ * Interpreter class
+ *
+ * @author            Diego Klein
+ * @author            Lucas Gavirachi Cardoso
+ * @author            Pedro Maia Rogoski
+ * @author            Roberto Luís Rezende
+ */
 public class Interpreter {
     private int dataPointer;
     private int programPointer;
@@ -23,6 +30,13 @@ public class Interpreter {
     private int[][] specialCharMap;
     private int IFPointer;
 
+    /**
+     * Interpreter class constructor
+     *
+     * @param sourceFile  Coluna atual da peça a ser movida
+     * @param ifFile      Linha atual da peça a ser movida
+     * @param ofFile      Coluna destino da peça a ser movida
+     */
     public Interpreter(String sourceFile, String ifFile, String ofFile) {
         dataPointer = 0;
         programPointer = 0;
@@ -52,6 +66,12 @@ public class Interpreter {
     $    termina o programa e imprime o conteúdo da memória no arquivo OF.
         *
         * */
+    /**
+     * runs the program
+     *
+     * @param program     Coluna atual da peça a ser movida
+     * @return            verdadeiro se o movimento é válido ou falso se inválido
+     */
     public boolean run(String program) {
         if(!checkSpecialChars(program)) return false;
         mapSpecialChars(program);
@@ -114,6 +134,12 @@ public class Interpreter {
         }
     }
 
+    /**
+     * runs the program
+     *
+     * @param program     Coluna atual da peça a ser movida
+     * @return            verdadeiro se o movimento é válido ou falso se inválido
+     */
     private boolean checkSpecialChars(String program){
         int count = 0;
 
@@ -127,7 +153,11 @@ public class Interpreter {
         return count == 0;
     }
 
-    // This function will map which [ belongs to each ], keeping the position in the string;
+    /**
+     * This function will map which [ belongs to each ], keeping the position in the string
+     *
+     * @param program     Coluna atual da peça a ser movida
+     */
     private void mapSpecialChars(String program){
         int count = 0;
 
@@ -154,6 +184,9 @@ public class Interpreter {
         }
     }
 
+    /**
+     * runs the program
+     */
     private void writeInOF(){
         Path pathTexto = Paths.get(ofFile);
 
@@ -165,7 +198,12 @@ public class Interpreter {
 
     }
 
-    //lê o arquivo source e o transforma em uma String única
+    /**
+     * lê o arquivo source e o transforma em uma String única
+     *
+     * @param source     Coluna atual da peça a ser movida
+     * @return           verdadeiro se o movimento é válido ou falso se inválido
+     */
     public String readSource(String source) {
         Path path1 = Paths.get(source);
         String sourceStringyfied ="";
@@ -189,7 +227,12 @@ public class Interpreter {
         return null;
     }
 
-    //lê o arquivo if e o transforma em um array
+    /**
+     * lê o arquivo if e o transforma em um array
+     *
+     * @param ifFile     Coluna atual da peça a ser movida
+     * @return           verdadeiro se o movimento é válido ou falso se inválido
+     */
     public int [] turnIfFileIntoArray (String ifFile) {
         Path path1 = Paths.get(ifFile);
         int [] ifArray;
@@ -222,6 +265,12 @@ public class Interpreter {
         return null;
     }
 
+    /**
+     * lê o arquivo if e o transforma em um array
+     *
+     * @param ifFile     Coluna atual da peça a ser movida
+     * @return           verdadeiro se o movimento é válido ou falso se inválido
+     */
     public int getSizeForTheIfFileArray (String ifFile) {
         Path path1 = Paths.get(ifFile);
         int size=0;
@@ -243,6 +292,10 @@ public class Interpreter {
         return 0;
     }
 
+    /**
+     * lê o arquivo if e o transforma em um array
+     *
+     */
     private void memoryDump(){
         System.out.println("\nMemory:");
         for(int i=0; i<memory.length; i++){
@@ -250,6 +303,10 @@ public class Interpreter {
         }
     }
 
+    /**
+     * lê o arquivo if e o transforma em um array
+     *
+     */
     private void readIF(){
         memory[dataPointer] = ifArray[IFPointer];
         IFPointer++;
