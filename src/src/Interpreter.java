@@ -1,16 +1,42 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static jdk.nashorn.internal.runtime.JSType.isNumber;
+
 public class Interpreter {
     private int dataPointer;
     private int programPointer;
     private int[] memory;
 
+    private String sourceFile;
+    private String ofFile;
+    private String ifFile;
+
+    private String program;
+    private int[] ifArray;
+
     private int[][] specialCharMap;
     private int IFPointer;
 
-    public Interpreter() {
+    public Interpreter(String sourceFile, String ifFile, String ofFile) {
         dataPointer = 0;
         programPointer = 0;
         memory = new int[3]; //The memory will be 1000, 3 is just for testing pourposes
         IFPointer = 0;
+
+        // sets the files
+        this.sourceFile = sourceFile;
+        this.ifFile = ifFile;
+        this.ofFile = ofFile;
+
+        this.program = readSource(sourceFile);
+        this.ifArray = turnIfFileIntoArray (ifFile);
+
     }
 
     /*
@@ -129,21 +155,103 @@ public class Interpreter {
     }
 
     private void writeInOF(){
-        System.out.println(memory[dataPointer]);
+        Path pathTexto = Paths.get(ofFile);
+
+        try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(pathTexto.getFileName(), Charset.forName("utf8")))) {
+            writer.println(memory[dataPointer]);
+        } catch (IOException x) {
+            System.err.format("Erro de E/S: %s%n", x);
+        }
+
+    }
+
+    //lê o arquivo source e o transforma em uma String única
+    public String readSource(String source) {
+        Path path1 = Paths.get(source);
+        String sourceStringyfied ="";
+
+        try (BufferedReader reader = Files.newBufferedReader(path1.getFileName(), Charset.forName("utf8"))) {
+            String line = null;
+
+            while ((line = reader.readLine()) != null) {
+
+                if(!line.isEmpty()){
+                    line = line.trim();
+                    sourceStringyfied = sourceStringyfied + line;
+                }
+            }
+
+            return sourceStringyfied;
+
+        } catch (IOException x) {
+            System.err.format("Erro de E/S: %s%n", x);
+        }
+        return null;
+    }
+
+    //lê o arquivo if e o transforma em um array
+    public int [] turnIfFileIntoArray (String ifFile) {
+        Path path1 = Paths.get(ifFile);
+        int [] ifArray;
+
+        try (BufferedReader reader = Files.newBufferedReader(path1.getFileName(), Charset.forName("utf8"))) {
+            String line = null;
+
+            // checks the size of the future array for the IF file
+            int size = getSizeForTheIfFileArray(ifFile);
+
+            ifArray = new int[size];
+
+            int index=0;
+            int IFvalue;
+
+            while ((line = reader.readLine()) != null) {
+                if(!line.isEmpty()){
+                    line = line.trim();
+                    IFvalue = Integer.parseInt(line);
+                    ifArray[index]=IFvalue;
+                    index++;
+                }
+            }
+
+            return ifArray;
+
+        } catch (IOException x) {
+            System.err.format("Erro de E/S: %s%n", x);
+        }
+        return null;
+    }
+
+    public int getSizeForTheIfFileArray (String ifFile) {
+        Path path1 = Paths.get(ifFile);
+        int size=0;
+
+        try (BufferedReader reader = Files.newBufferedReader(path1.getFileName(), Charset.forName("utf8"))) {
+            String line = null;
+
+            while ((line = reader.readLine()) != null) {
+                if(!line.isEmpty()){
+                    size++;
+                }
+            }
+
+            return size;
+
+        } catch (IOException x) {
+            System.err.format("Erro de E/S: %s%n", x);
+        }
+        return 0;
     }
 
     private void memoryDump(){
-        System.out.println("Memory:");
+        System.out.println("\nMemory:");
         for(int i=0; i<memory.length; i++){
-            System.out.println(memory[i]);
+            System.out.print(memory[i] + "; ");
         }
     }
 
     private void readIF(){
-        int [] file = new int[2];
-        file[0] = 2;
-        file[1] = 3;
-        memory[dataPointer] = file[IFPointer];
+        memory[dataPointer] = ifArray[IFPointer];
         IFPointer++;
     }
 }
