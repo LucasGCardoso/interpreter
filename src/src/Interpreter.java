@@ -8,12 +8,16 @@ import java.nio.file.Paths;
 
 
 /**
+ * This class is used to read the file SOURCE and IF and then writes its output in the OF file
+ * also the content of the memory is displayed
  * Interpreter class
  *
  * @author            Diego Klein
  * @author            Lucas Gavirachi Cardoso
  * @author            Pedro Maia Rogoski
  * @author            Roberto Luís Rezende
+ * @version           1.0
+ * @since             2020-09-27
  */
 public class Interpreter {
     private int dataPointer;
@@ -33,9 +37,9 @@ public class Interpreter {
     /**
      * Interpreter class constructor
      *
-     * @param sourceFile  Coluna atual da peça a ser movida
-     * @param ifFile      Linha atual da peça a ser movida
-     * @param ofFile      Coluna destino da peça a ser movida
+     * @param sourceFile  the SOURCE file
+     * @param ifFile      the IF file
+     * @param ofFile      the OF file
      */
     public Interpreter(String sourceFile, String ifFile, String ofFile) {
         dataPointer = 0;
@@ -69,8 +73,8 @@ public class Interpreter {
     /**
      * runs the program
      *
-     * @param program     Coluna atual da peça a ser movida
-     * @return            verdadeiro se o movimento é válido ou falso se inválido
+     * @param program     the program from the SOURCE file
+     * @return            true if... or false if...
      */
     public boolean run(String program) {
         if(!checkSpecialChars(program)) return false;
@@ -135,10 +139,10 @@ public class Interpreter {
     }
 
     /**
-     * runs the program
+     * This function checks
      *
-     * @param program     Coluna atual da peça a ser movida
-     * @return            verdadeiro se o movimento é válido ou falso se inválido
+     * @param program     the program that was read from the SOURCE file
+     * @return            true if... or false if...
      */
     private boolean checkSpecialChars(String program){
         int count = 0;
@@ -156,7 +160,7 @@ public class Interpreter {
     /**
      * This function will map which [ belongs to each ], keeping the position in the string
      *
-     * @param program     Coluna atual da peça a ser movida
+     * @param program     the program that was read from the SOURCE file
      */
     private void mapSpecialChars(String program){
         int count = 0;
@@ -185,7 +189,9 @@ public class Interpreter {
     }
 
     /**
-     * runs the program
+     * Writes the current position of the memory int the OF file
+     *
+     * @exception IOException     On file not found error
      */
     private void writeInOF(){
         Path pathTexto = Paths.get(ofFile);
@@ -199,10 +205,11 @@ public class Interpreter {
     }
 
     /**
-     * lê o arquivo source e o transforma em uma String única
+     * Reads the SOURCE file and turns it into a single String for easier manuipulation
      *
-     * @param source     Coluna atual da peça a ser movida
-     * @return           verdadeiro se o movimento é válido ou falso se inválido
+     * @param source                the SOURCE file
+     * @exception IOException       On file not found error
+     * @return                      a String with the content of the SOURCE file
      */
     public String readSource(String source) {
         Path path1 = Paths.get(source);
@@ -228,10 +235,11 @@ public class Interpreter {
     }
 
     /**
-     * lê o arquivo if e o transforma em um array
+     * Reads the file IF and turns it into an array of int for easier manipulation
      *
-     * @param ifFile     Coluna atual da peça a ser movida
-     * @return           verdadeiro se o movimento é válido ou falso se inválido
+     * @param ifFile                the IF file
+     * @exception IOException       on file not found error
+     * @return                      an array with the IF file values
      */
     public int [] turnIfFileIntoArray (String ifFile) {
         Path path1 = Paths.get(ifFile);
@@ -266,10 +274,11 @@ public class Interpreter {
     }
 
     /**
-     * lê o arquivo if e o transforma em um array
+     * reads the IF file to check how many values it has
      *
-     * @param ifFile     Coluna atual da peça a ser movida
-     * @return           verdadeiro se o movimento é válido ou falso se inválido
+     * @param ifFile                the IF file
+     * @exception IOException       On file not found error
+     * @return                      the number os values in the IF file
      */
     public int getSizeForTheIfFileArray (String ifFile) {
         Path path1 = Paths.get(ifFile);
@@ -293,7 +302,7 @@ public class Interpreter {
     }
 
     /**
-     * lê o arquivo if e o transforma em um array
+     * Prints in the screen the values stored in the memory
      *
      */
     private void memoryDump(){
@@ -304,8 +313,8 @@ public class Interpreter {
     }
 
     /**
-     * lê o arquivo if e o transforma em um array
-     *
+     * Reads the IF array and puts its current value in the current position of the memory,
+     * then increases the IF pointer in one position
      */
     private void readIF(){
         memory[dataPointer] = ifArray[IFPointer];
