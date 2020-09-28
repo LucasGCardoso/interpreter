@@ -8,9 +8,12 @@ import java.nio.file.Paths;
 
 
 /**
- * This class is used to read the file SOURCE and IF and then writes its output in the OF file
- * also the content of the memory is displayed
- * Interpreter class
+ * This class receives three files: SOURCE, IF and OF, and then uses them
+ * The SOURCE file contains the program to be run.
+ * The IF file cntains the values in the memory.
+ * THE OF file will be used to write the final values in the memory.
+ * as if it were an interpreter for a fictitious machine.
+ * At the end of the running the content of the memory is displayed on the screen.
  *
  * @author            Diego Klein
  * @author            Lucas Gavirachi Cardoso
@@ -57,21 +60,23 @@ public class Interpreter {
 
     }
 
-    /*
-        *
-    >    incrementa o ponteiro de dados para a próxima posição (uma unidade à direita).
-    <    decrementa o ponteiro de dados para a posição anterior (uma unidade à esquerda).
-    +    incrementa em uma unidade a posição apontada pelo ponteiro de dados.
-    -    decrementa em uma unidade a posição apontada pelo ponteiro de dados.
-    [    se a posição apontada pelo ponteiro de dados é 0, então desloque o ponteiro de programa para o próximo comando em sequência ao ] correspondente. Caso contrário, avance o ponteiro de programa.
-    ]    se a posição apontada pelo ponteiro de dados é diferente de 0, então retroceda o ponteiro de programa para o [ correspondente.
-    ,    lê uma entrada do arquivo IF e o armazena na posição apontada pelo ponteiro de dados
-    .    escreve no arquivo OF o byte apontado pelo ponteiro de dados.
-    $    termina o programa e imprime o conteúdo da memória no arquivo OF.
-        *
-        * */
     /**
-     * runs the program
+     * This method runs the program.
+     *
+     * The commands are:
+     * >    increments the data pointer in one unit (one unit to the right).
+     * <    decrements the data pointer in one unit (one unit to the left).
+     * +    increments in one unit the position of the memory referenced by the data pointer.
+     * -    decrements in one unit the position of the memory referenced by the data pointer.
+     * [    if the position of the memory referenced by the data pointer is 0, then sends the program pointer
+     *      to the next command following the correspondig ]. Otherwise, advances the program pointer.
+     * ]    if the position of the memory referenced by the data pointer is not 0,
+     *      then sends the program pointer to the previous correspondig [.
+     * ,    reads an entry from the IF file and stores it at the memory position referenced by the data pointer.
+     * .    writes in the OF file the byte referenced by the data pointer.
+     * $    ends the program and prints its content in the OF file.
+     *
+     *      Any other command is ignored and the program pointer is incremented.
      *
      * @param program     the program from the SOURCE file
      * @return            true if... or false if...
