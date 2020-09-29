@@ -55,7 +55,10 @@ public class Interpreter {
         this.ifFile = ifFile;
         this.ofFile = ofFile;
 
+        // turns the SOURCE file into a single String
         this.program = readSource(sourceFile);
+
+        // turns the IF file into an array of int
         this.ifArray = turnIfFileIntoArray (ifFile);
 
     }
@@ -79,10 +82,13 @@ public class Interpreter {
      *      Any other command is ignored and the program pointer is incremented.
      *
      * @param program     the program from the SOURCE file
-     * @return            true if... or false if...
+     * @return             0 if the program run succesfully
+     *                    -1 if it has unpaired [ and ]
+     *                    -2 if it doesn´t end with $
      */
-    public boolean run(String program) {
-        if(!checkSpecialChars(program)) return false;
+    public int run(String program) {
+        if(!checkSpecialChars(program)) return -1;
+        if(program.charAt(program.length()-1)!='$') return -2;
         mapSpecialChars(program);
         while (true) {
             char command = program.charAt(programPointer);
@@ -138,16 +144,17 @@ public class Interpreter {
                 case '$':
                     //termina o programa e imprime o conteúdo da memória no arquivo OF.
                     memoryDump();
-                    return true;
+                    return 0;
             }
         }
     }
 
     /**
-     * This function checks
+     * This function checks if the program has an equal amount of [ and ].
+     * If the program doesn´t has an equal amount of [ and ] it cannot run properly.
      *
      * @param program     the program that was read from the SOURCE file
-     * @return            true if... or false if...
+     * @return            true if the number of [ and ] is equal, otherwise it returns false
      */
     private boolean checkSpecialChars(String program){
         int count = 0;
