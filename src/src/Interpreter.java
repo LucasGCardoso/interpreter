@@ -89,7 +89,7 @@ public class Interpreter {
      *                    -2 if it doesn´t end with $
      */
     public int run(String program) {
-        System.out.println("oi");
+        System.out.println("ainda tenta rodar o programa pelo método run");
         if(!checkSpecialChars(program)) return -1;
         if(program.charAt(program.length()-1)!='$') return -2;
         mapSpecialChars(program);
