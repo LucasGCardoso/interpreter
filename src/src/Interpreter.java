@@ -27,6 +27,7 @@ public class Interpreter {
     private int dataPointer;
     private int programPointer;
     private int[] memory;
+    private int memorySize = 30;
 
     private String sourceFile;
     private String ofFile;
@@ -48,8 +49,9 @@ public class Interpreter {
     public Interpreter(String sourceFile, String ifFile, String ofFile) {
         dataPointer = 0;
         programPointer = 0;
-        memory = new int[3]; //The memory will be 1000, 3 is just for testing pourposes
         IFPointer = 0;
+
+        memory = new int[memorySize]; //The memory will be 1000, 3 is just for testing pourposes
 
         // sets the files
         this.sourceFile = sourceFile;
@@ -60,23 +62,46 @@ public class Interpreter {
         this.program = readSource(sourceFile);
 
         // turns the IF file into an array of int
-        if (turnIfFileIntoArray (ifFile)==null) return;
-        else this.ifArray = turnIfFileIntoArray (ifFile);
-
+        if (turnIFFileIntoArray(ifFile)==null) return;
+        else this.ifArray = turnIFFileIntoArray(ifFile);
     }
+
+    /**
+     * Interpreter class constructor without IF file use
+     *
+     * @param sourceFile  the SOURCE file
+     * @param ofFile      the OF file
+     */
+    public Interpreter(String sourceFile, String ofFile) {
+        dataPointer = 0;
+        programPointer = 0;
+
+        memory = new int[memorySize]; //The memory will be 1000, 3 is just for testing pourposes
+
+        // sets the files
+        this.sourceFile = sourceFile;
+        this.ofFile = ofFile;
+
+        // turns the SOURCE file into a single String
+        this.program = readSource(sourceFile);
+        //this.program = "+++>+++[+++<-]$";
+
+        run(program);
+    }
+
 
     /**
      * This method runs the program.
      *
      * The commands are:
-     * >    increments the data pointer in one unit (one unit to the right).
-     * <    decrements the data pointer in one unit (one unit to the left).
-     * +    increments in one unit the position of the memory referenced by the data pointer.
-     * -    decrements in one unit the position of the memory referenced by the data pointer.
+     * >    moves the data pointer to the next cell.
+     * <    moves the data pointer to the previous cell.
+     * +    adds 1 to the value of the cell referenced by the data pointer.
+     * -    subtracts 1 to the value of the cell referenced by the data pointer.
      * [    if the position of the memory referenced by the data pointer is 0, then sends the program pointer
      *      to the next command following the correspondig ]. Otherwise, advances the program pointer.
      * ]    if the position of the memory referenced by the data pointer is not 0,
-     *      then sends the program pointer to the previous correspondig [.
+     *      then sends the program pointer to the previous corresponding [.
      * ,    reads an entry from the IF file and stores it at the memory position referenced by the data pointer.
      * .    writes in the OF file the byte referenced by the data pointer.
      * $    ends the program and prints its content in the OF file.
@@ -87,6 +112,7 @@ public class Interpreter {
      * @return             0 if the program run successfully
      *                    -1 if it has unpaired [ and ]
      *                    -2 if it doesn´t end with $
+     *                    -3 if used the command "," without providing an IF file
      */
     public int run(String program) {
         if(!checkSpecialChars(program)) return -1;
@@ -106,10 +132,12 @@ public class Interpreter {
                 case '+':
                     memory[dataPointer]++;
                     programPointer++;
+                    System.out.println("soma");
                     break;
                 case '-':
                     memory[dataPointer]--;
                     programPointer++;
+                    System.out.println("sub");
                     break;
                 case '[':
                     if(memory[dataPointer] == 0){
@@ -127,13 +155,19 @@ public class Interpreter {
                         for(int i=0; i<specialCharMap.length; i++){
                             if(specialCharMap[i][1] == programPointer){
                                 programPointer = specialCharMap[i][0];
+                                System.out.println("erro 3");
                             }
                         }
                     }else{
                         programPointer++;
+                        System.out.println("erro4");
                     }
                     break;
                 case ',':
+                    // In case you reach this command but there was no IF file provided by the user
+                    if (ifFile==null) {
+                        return -3;
+                    }
                     readIF();
                     programPointer++;
                     break;
@@ -144,6 +178,9 @@ public class Interpreter {
                 case '$':
                     memoryDump();
                     return 0;
+                default:
+                    System.out.println("default");
+                    programPointer++;
             }
         }
     }
@@ -212,7 +249,6 @@ public class Interpreter {
         } catch (IOException x) {
             System.err.format("I/O Error: %s%n\n", x);
         }
-
     }
 
     /**
@@ -257,9 +293,9 @@ public class Interpreter {
      * @exception IOException           on any other error
      * @return                          an array with the IF file values
      */
-    public int [] turnIfFileIntoArray (String ifFile) {
+    public int [] turnIFFileIntoArray(String ifFile) {
         Path path1 = Paths.get(ifFile);
-        int [] ifArray;
+        int [] IFArray;
 
         try (BufferedReader reader = Files.newBufferedReader(path1.getFileName(), Charset.forName("utf8"))) {
             String line = null;
@@ -267,21 +303,21 @@ public class Interpreter {
             // checks the size of the future array for the IF file
             int size = getSizeForTheIfFileArray(ifFile);
 
-            ifArray = new int[size];
+            IFArray = new int[size];
 
             int index = 0;
-            int IFvalue;
+            int IFValue;
 
             while ((line = reader.readLine()) != null) {
                 if (!line.isEmpty()) {
                     line = line.trim();
-                    IFvalue = Integer.parseInt(line);
-                    ifArray[index] = IFvalue;
+                    IFValue = Integer.parseInt(line);
+                    IFArray[index] = IFValue;
                     index++;
                 }
             }
 
-            return ifArray;
+            return IFArray;
         } catch (NoSuchFileException x) {
             System.err.format("IF File not found.\n", x);
         } catch (NumberFormatException x) {
