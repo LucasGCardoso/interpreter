@@ -84,9 +84,6 @@ public class Interpreter {
 
         // turns the SOURCE file into a single String
         this.program = readSource(sourceFile);
-        //this.program = "+++>+++[+++<-]$";
-
-        run(program);
     }
 
 
@@ -108,13 +105,12 @@ public class Interpreter {
      *
      *      Any other command is ignored and the program pointer is incremented.
      *
-     * @param program     the program from the SOURCE file
      * @return             0 if the program run successfully
      *                    -1 if it has unpaired [ and ]
      *                    -2 if it doesn´t end with $
      *                    -3 if used the command "," without providing an IF file
      */
-    public int run(String program) {
+    public int run() {
         if(!checkSpecialChars(program)) return -1;
         if(program.charAt(program.length()-1)!='$') return -2;
         mapSpecialChars(program);
@@ -132,12 +128,10 @@ public class Interpreter {
                 case '+':
                     memory[dataPointer]++;
                     programPointer++;
-                    System.out.println("soma");
                     break;
                 case '-':
                     memory[dataPointer]--;
                     programPointer++;
-                    System.out.println("sub");
                     break;
                 case '[':
                     if(memory[dataPointer] == 0){
@@ -155,12 +149,10 @@ public class Interpreter {
                         for(int i=0; i<specialCharMap.length; i++){
                             if(specialCharMap[i][1] == programPointer){
                                 programPointer = specialCharMap[i][0];
-                                System.out.println("erro 3");
                             }
                         }
                     }else{
                         programPointer++;
-                        System.out.println("erro4");
                     }
                     break;
                 case ',':
@@ -179,7 +171,6 @@ public class Interpreter {
                     memoryDump();
                     return 0;
                 default:
-                    System.out.println("default");
                     programPointer++;
             }
         }
@@ -227,12 +218,11 @@ public class Interpreter {
         }
 
         matrixRow = 0;
-        for(int i=program.length()-1; i==0; i--){
+        for(int i=program.length()-1; i>0; i--){
             if(program.charAt(i) == ']'){
                 specialCharMap[matrixRow][1] = i;
                 matrixRow++;
             }
-
         }
     }
 
@@ -243,6 +233,7 @@ public class Interpreter {
      */
     private void writeInOF(){
         Path pathTexto = Paths.get(ofFile);
+        System.out.println("chamou write" + memory[dataPointer]);
 
         try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(pathTexto.getFileName(), Charset.forName("utf8")))) {
             writer.println(memory[dataPointer]);
