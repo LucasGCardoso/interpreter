@@ -84,12 +84,11 @@ public class Interpreter {
      *      Any other command is ignored and the program pointer is incremented.
      *
      * @param program     the program from the SOURCE file
-     * @return             0 if the program run succesfully
+     * @return             0 if the program run successfully
      *                    -1 if it has unpaired [ and ]
      *                    -2 if it doesn´t end with $
      */
     public int run(String program) {
-        System.out.println("ainda tenta rodar o programa pelo método run");
         if(!checkSpecialChars(program)) return -1;
         if(program.charAt(program.length()-1)!='$') return -2;
         mapSpecialChars(program);
@@ -201,9 +200,9 @@ public class Interpreter {
     }
 
     /**
-     * Writes the current position of the memory int the OF file
+     * Writes the current position of the memory in the OF file
      *
-     * @exception IOException     On file not found error
+     * @exception IOException           on any I/O error
      */
     private void writeInOF(){
         Path pathTexto = Paths.get(ofFile);
@@ -211,7 +210,7 @@ public class Interpreter {
         try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(pathTexto.getFileName(), Charset.forName("utf8")))) {
             writer.println(memory[dataPointer]);
         } catch (IOException x) {
-            System.err.format("Erro de E/S: %s%n", x);
+            System.err.format("I/O Error: %s%n\n", x);
         }
 
     }
@@ -219,9 +218,10 @@ public class Interpreter {
     /**
      * Reads the SOURCE file and turns it into a single String for easier manuipulation
      *
-     * @param source                the SOURCE file
-     * @exception IOException       On file not found error
-     * @return                      a String with the content of the SOURCE file
+     * @param source                    the SOURCE file
+     * @exception NoSuchFileException   on file not found error
+     * @exception IOException           on any other error
+     * @return                          a String with the content of the SOURCE file
      */
     public String readSource(String source) {
         Path path1 = Paths.get(source);
@@ -232,7 +232,7 @@ public class Interpreter {
 
             while ((line = reader.readLine()) != null) {
 
-                if(!line.isEmpty()){
+                if (!line.isEmpty()) {
                     line = line.trim();
                     sourceStringyfied = sourceStringyfied + line;
                 }
@@ -240,8 +240,10 @@ public class Interpreter {
 
             return sourceStringyfied;
 
+        } catch (NoSuchFileException x) {
+            System.err.format("SOURCE File not found.\n", x);
         } catch (IOException x) {
-            System.err.format("Erro de E/S: %s%n", x);
+            System.err.format("I/O Error %s%n\n", x);
         }
         return null;
     }
@@ -249,9 +251,11 @@ public class Interpreter {
     /**
      * Reads the file IF and turns it into an array of int for easier manipulation
      *
-     * @param ifFile                the IF file
-     * @exception IOException       on file not found error
-     * @return                      an array with the IF file values
+     * @param ifFile                    the IF file
+     * @exception NoSuchFileException   on file not found error
+     * @exception NumberFormatException if found anything else other than integer values in the IF file
+     * @exception IOException           on any other error
+     * @return                          an array with the IF file values
      */
     public int [] turnIfFileIntoArray (String ifFile) {
         Path path1 = Paths.get(ifFile);
@@ -281,9 +285,9 @@ public class Interpreter {
         } catch (NoSuchFileException x) {
             System.err.format("IF File not found.\n", x);
         } catch (NumberFormatException x) {
-            System.err.print("IF file must cotain only integer numbers.");
+            System.err.print("IF file must contain only integer numbers.\n");
         } catch (IOException x) {
-            System.err.format("I/O error: %s%n", x);
+            System.err.format("I/O error: %s%n\n", x);
         }
         return null;
     }
@@ -319,7 +323,7 @@ public class Interpreter {
      * reads the IF file to check how many values it has
      *
      * @param ifFile                the IF file
-     * @exception IOException       On file not found error
+     * @exception IOException       on any I/O error
      * @return                      the number os values in the IF file
      */
     public int getSizeForTheIfFileArray (String ifFile) {
@@ -338,7 +342,7 @@ public class Interpreter {
             return size;
 
         } catch (IOException x) {
-            System.err.format("Erro de E/S: %s%n", x);
+            System.err.format("I/O Error: %s%n\n", x);
         }
         return 0;
     }
