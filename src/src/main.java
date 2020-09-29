@@ -5,7 +5,7 @@ public class main {
         // Ideally they should be in the root directory of the project.
         String sourceFile = "source";
         String ofFile = "of.txt";
-        String ifFile = "if.txt";
+        String ifFile = "if com erro.txt";
 
         //Não termina com $
         String programaTeste1 = ">";

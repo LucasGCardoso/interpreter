@@ -3,6 +3,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -59,7 +60,8 @@ public class Interpreter {
         this.program = readSource(sourceFile);
 
         // turns the IF file into an array of int
-        this.ifArray = turnIfFileIntoArray (ifFile);
+        if (turnIfFileIntoArray (ifFile)==null) return;
+        else this.ifArray = turnIfFileIntoArray (ifFile);
 
     }
 
@@ -87,6 +89,7 @@ public class Interpreter {
      *                    -2 if it doesn´t end with $
      */
     public int run(String program) {
+        System.out.println("oi");
         if(!checkSpecialChars(program)) return -1;
         if(program.charAt(program.length()-1)!='$') return -2;
         mapSpecialChars(program);
@@ -136,13 +139,10 @@ public class Interpreter {
                     programPointer++;
                     break;
                 case '.':
-                    //escreve no arquivo OF o byte apontado pelo ponteiro de dados.
                     writeInOF();
                     programPointer++;
                     break;
-
                 case '$':
-                    //termina o programa e imprime o conteúdo da memória no arquivo OF.
                     memoryDump();
                     return 0;
             }
@@ -265,25 +265,55 @@ public class Interpreter {
 
             ifArray = new int[size];
 
-            int index=0;
+            int index = 0;
             int IFvalue;
 
             while ((line = reader.readLine()) != null) {
-                if(!line.isEmpty()){
+                if (!line.isEmpty()) {
                     line = line.trim();
                     IFvalue = Integer.parseInt(line);
-                    ifArray[index]=IFvalue;
+                    ifArray[index] = IFvalue;
                     index++;
                 }
             }
 
             return ifArray;
-
+        } catch (NoSuchFileException x) {
+            System.err.format("IF File not found.\n", x);
+        } catch (NumberFormatException x) {
+            System.err.print("IF file must cotain only integer numbers.");
         } catch (IOException x) {
-            System.err.format("Erro de E/S: %s%n", x);
+            System.err.format("I/O error: %s%n", x);
         }
         return null;
     }
+
+// para eu testar os erros. estou aprendendo. não apaga
+/*
+    catch (ArrayIndexOutOfBoundsException e) {
+        System.err.println("Uso: AppExcecao3 <num1> <num2>");
+        e.printStackTrace();
+        System.out.println("Mensagem: "+e.getMessage());
+    } catch (NumberFormatException e) {
+        System.err.println("Valores devem ser inteiros");
+    } catch (ArithmeticException e) {
+        System.err.println("Não posso dividir por zero!");
+    }
+
+
+
+    if (i2==0){
+        // throw new ArithmeticException("Dividir por zero não pode!");
+        throw new IllegalArgumentException("Dividir por zero não pode!");
+    }
+
+
+    catch (NoSuchFileException x) {
+        System.err.format("Arquivo não existe!!", x);
+    } catch (IOException e) { //esse catch é exigido pelo newBufferedReader
+        e.printStackTrace();
+*/
+
 
     /**
      * reads the IF file to check how many values it has
