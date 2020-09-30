@@ -8,20 +8,31 @@ public class main {
         String ofFile = "of";
         String ifFile = "if.txt";
 
-        // com IF file
+        // If you want to use an IF file, please use this constructor
         //Interpreter machine = new Interpreter(sourceFile, ifFile, ofFile);
 
-        // sem IF file
+        // If you don´t want to use an IF file, please use this constructor
         Interpreter machine = new Interpreter(sourceFile, ofFile);
 
         // Checks if the program has any errors and runs it
         int errorCode = machine.run();
+
+        // Checks if the program ended successfully (errorCode=0) and then
+        // converts the OF file from ASCII to String.
+        // This will only be useful if the intent of the program is to output any kind of text.
+        if (errorCode==0) {
+            String outputInTextFormat = machine.convertOfFileFromAsciiToText();
+            System.out.println(outputInTextFormat);
+        }
+
+        // Treats the error code received from running the program
         if (errorCode == -1)
             System.out.println("Error. The program is badly written. It has at least one unpaired [ or ].");
-        else if (errorCode == -2) System.out.println("Error. The program is badly written. It doesn´t end with $.");
-        else if (errorCode == -3) System.out.println("Error. There is a command to read from IF file in the source code, but you have not provided an IF file.");
-        else System.out.println("\nProgram succesfully ended.");
-
-
+        else if (errorCode == -2)
+            System.out.println("Error. The program is badly written. It doesn´t end with $.");
+        else if (errorCode == -3)
+            System.out.println("Error. There is a command to read from IF file in the source code, but you have not provided an IF file.");
+        else
+            System.out.println("\nProgram succesfully ended.");
     }
 }

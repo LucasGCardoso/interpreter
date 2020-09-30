@@ -33,6 +33,7 @@ public class Interpreter {
     private String ofFile;
     private String ifFile;
     private String ofFileContent;
+    private String ofFileContentReadableString;
 
     private String program;
     private int[] ifArray;
@@ -66,9 +67,13 @@ public class Interpreter {
         if (turnIFFileIntoArray(ifFile)==null) return;
         else this.ifArray = turnIFFileIntoArray(ifFile);
 
-        // Initializes the String the will contain the output of the "." command and
+        // Initializes the String that will contain the output of the "." command and
         // later will be stored in the OF file
         ofFileContent = "";
+
+        // Initializes the String that will contain the output of the "." command in
+        // a readable format, i.e., converted from ASCII code to characters.
+        ofFileContentReadableString="";
     }
 
     /**
@@ -93,6 +98,10 @@ public class Interpreter {
         // Initializes the String the will contain the output of the "." command and
         // later will be stored in the OF file
         ofFileContent = "";
+
+        // Initializes the String that will contain the output of the "." command in
+        // a readable format, i.e., converted from ASCII code to characters.
+        ofFileContentReadableString="";
     }
 
 
@@ -174,6 +183,7 @@ public class Interpreter {
                     break;
                 case '.':
                     ofFileContent = ofFileContent + memory[dataPointer] + "\n";
+                    ofFileContentReadableString = ofFileContentReadableString + Character.toString((char)memory[dataPointer]);
                     programPointer++;
                     break;
                 case '$':
@@ -404,5 +414,12 @@ public class Interpreter {
     private void readIF(){
         memory[dataPointer] = ifArray[IFPointer];
         IFPointer++;
+    }
+
+    /**
+     * Returns the content of the OF file in a readable format
+     */
+    public String convertOfFileFromAsciiToText (){
+        return ofFileContentReadableString;
     }
 }
