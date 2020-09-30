@@ -1,4 +1,4 @@
-public class main {
+public class smain {
     public static void main(String args[]){
 
         // You should manually set the files paths here.

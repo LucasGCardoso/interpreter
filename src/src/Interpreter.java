@@ -164,7 +164,8 @@ public class Interpreter {
                     programPointer++;
                     break;
                 case '.':
-                    writeInOF();
+                    System.out.println(memory[dataPointer] + "\n");
+                    //writeInOF();
                     programPointer++;
                     break;
                 case '$':
@@ -232,7 +233,6 @@ public class Interpreter {
      */
     private void writeInOF(){
         Path pathTexto = Paths.get(ofFile);
-        System.out.println("chamou write " + memory[dataPointer]);
 
         try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(pathTexto.getFileName(), Charset.forName("utf8")))) {
             writer.println(memory[dataPointer] + "\n");
