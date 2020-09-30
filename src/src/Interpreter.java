@@ -10,11 +10,11 @@ import java.util.Stack;
 
 /**
  * This class receives three files: SOURCE, IF and OF, and then uses them
- * The SOURCE file contains the program to be run.
- * The IF file cntains the values in the memory.
- * THE OF file will be used to write the final values in the memory.
  * as if it were an interpreter for a fictitious machine.
- * At the end of the running the content of the memory is displayed on the screen.
+ *
+ * The SOURCE file contains the program to be run.
+ * The IF file contains the user input values.
+ * THE OF file will contain the outputs and the final values of the memory.
  *
  * @author            Diego Klein
  * @author            Lucas Gavirachi Cardoso
@@ -29,7 +29,6 @@ public class Interpreter {
     private int[] memory;
     private int memorySize = 1000;
 
-    private String sourceFile;
     private String ofFile;
     private String ifFile;
     private String ofFileContent;
@@ -53,10 +52,9 @@ public class Interpreter {
         programPointer = 0;
         IFPointer = 0;
 
-        memory = new int[memorySize]; //The memory will be 1000, 3 is just for testing pourposes
+        memory = new int[memorySize];
 
         // sets the files
-        this.sourceFile = sourceFile;
         this.ifFile = ifFile;
         this.ofFile = ofFile;
 
@@ -76,6 +74,7 @@ public class Interpreter {
         ofFileContentReadableString="";
     }
 
+
     /**
      * Interpreter class constructor without IF file use
      *
@@ -86,10 +85,9 @@ public class Interpreter {
         dataPointer = 0;
         programPointer = 0;
 
-        memory = new int[memorySize]; //The memory will be 1000, 3 is just for testing pourposes
+        memory = new int[memorySize];
 
         // sets the files
-        this.sourceFile = sourceFile;
         this.ofFile = ofFile;
 
         // turns the SOURCE file into a single String
@@ -114,24 +112,27 @@ public class Interpreter {
      * +    adds 1 to the value of the cell referenced by the data pointer.
      * -    subtracts 1 to the value of the cell referenced by the data pointer.
      * [    if the position of the memory referenced by the data pointer is 0, then sends the program pointer
-     *      to the next command following the correspondig ]. Otherwise, advances the program pointer.
+     *      to the next command following the corresponding ]. Otherwise, advances the program pointer.
      * ]    if the position of the memory referenced by the data pointer is not 0,
      *      then sends the program pointer to the previous corresponding [.
      * ,    reads an entry from the IF file and stores it at the memory position referenced by the data pointer.
      * .    writes in the OF file the byte referenced by the data pointer.
-     * $    ends the program and prints its content in the OF file.
+     * $    ends the program and dumps the memory in the OF file.
+     *
+     * #    We added this optional command. It will ignore a whole line in the SOURCE file.
+     *      It is used to create comment lines.
      *
      *      Any other command is ignored and the program pointer is incremented.
      *
      * @return             0 if the program run successfully
      *                    -1 if it has unpaired [ and ]
-     *                    -2 if it doesn´t end with $
+     *                    -2 if it doesn't end with $
      *                    -3 if used the command "," without providing an IF file
      */
     public int run() {
         if(!checkSpecialChars(program)) return -1;
         if(program.charAt(program.length()-1)!='$') return -2;
-        mapSpecialChars(program);
+        mapSquareBrackets(program);
         while (true) {
             char command = program.charAt(programPointer);
             switch (command){
@@ -198,7 +199,7 @@ public class Interpreter {
 
     /**
      * This function checks if the program has an equal amount of [ and ].
-     * If the program doesn´t has an equal amount of [ and ] it cannot run properly.
+     * If the program doesn't has an equal amount of [ and ] it cannot run properly.
      *
      * @param program     the program that was read from the SOURCE file
      * @return            true if the number of [ and ] is equal, otherwise it returns false
@@ -216,12 +217,13 @@ public class Interpreter {
         return count == 0;
     }
 
+
     /**
-     * This function will map which '[' belongs to each ']', keeping the position in the string
+     * This function will map which '[' belongs to each ']'
      *
      * @param program     the program that was read from the SOURCE file
      */
-    private void mapSpecialChars(String program){
+    private void mapSquareBrackets(String program){
         Stack<Integer> openChars = new Stack<Integer>();
         int count = 0;
 
@@ -261,7 +263,7 @@ public class Interpreter {
     }
 
     /**
-     * Reads the SOURCE file and turns it into a single String for easier manuipulation
+     * Reads the SOURCE file and turns it into a single String for easier manipulation
      *
      * @param source                    the SOURCE file
      * @exception NoSuchFileException   on file not found error
@@ -277,7 +279,7 @@ public class Interpreter {
 
             while ((line = reader.readLine()) != null) {
 
-                if (!line.isEmpty()) {
+                if (!line.isEmpty() && line.charAt(0) !='#') {
                     line = line.trim();
                     sourceStringyfied = sourceStringyfied + line;
                 }
@@ -294,7 +296,7 @@ public class Interpreter {
     }
 
     /**
-     * Reads the file IF and turns it into an array of int for easier manipulation
+     * Reads the IF file and turns it into an array of int for easier manipulation
      *
      * @param ifFile                    the IF file
      * @exception NoSuchFileException   on file not found error
@@ -337,32 +339,6 @@ public class Interpreter {
         return null;
     }
 
-// para eu testar os erros. estou aprendendo. não apaga - KK beleza
-/*
-    catch (ArrayIndexOutOfBoundsException e) {
-        System.err.println("Uso: AppExcecao3 <num1> <num2>");
-        e.printStackTrace();
-        System.out.println("Mensagem: "+e.getMessage());
-    } catch (NumberFormatException e) {
-        System.err.println("Valores devem ser inteiros");
-    } catch (ArithmeticException e) {
-        System.err.println("Não posso dividir por zero!");
-    }
-
-
-
-    if (i2==0){
-        // throw new ArithmeticException("Dividir por zero não pode!");
-        throw new IllegalArgumentException("Dividir por zero não pode!");
-    }
-
-
-    catch (NoSuchFileException x) {
-        System.err.format("Arquivo não existe!!", x);
-    } catch (IOException e) { //esse catch é exigido pelo newBufferedReader
-        e.printStackTrace();
-*/
-
 
     /**
      * reads the IF file to check how many values it has
@@ -392,8 +368,9 @@ public class Interpreter {
         return 0;
     }
 
+
     /**
-     * Adds to the OF file String the values stored in the memory
+     * Dumps the memory in the OF file String.
      *
      */
     private void memoryDump(){
@@ -407,6 +384,7 @@ public class Interpreter {
         }
     }
 
+
     /**
      * Reads the IF array and puts its current value in the current position of the memory,
      * then increases the IF pointer in one position
@@ -416,10 +394,12 @@ public class Interpreter {
         IFPointer++;
     }
 
+
     /**
      * Returns the content of the OF file in a readable format
      */
     public String convertOfFileFromAsciiToText (){
         return ofFileContentReadableString;
     }
+
 }

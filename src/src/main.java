@@ -4,21 +4,23 @@ public class main {
         // You should manually set the files paths here.
         // Ideally they should be in the root directory of the project.
         // The OF file will be created, so you can choose any name you want.
-        String sourceFile = "source";
+        //String sourceFile = "chess.bf";
+        //String sourceFile = "squares.bf";
+        String sourceFile = "source teste.txt";
         String ofFile = "of";
-        String ifFile = "if.txt";
+        String ifFile = "if teste.txt";
 
         // If you want to use an IF file, please use this constructor
-        //Interpreter machine = new Interpreter(sourceFile, ifFile, ofFile);
+        Interpreter machine = new Interpreter(sourceFile, ifFile, ofFile);
 
         // If you don´t want to use an IF file, please use this constructor
-        Interpreter machine = new Interpreter(sourceFile, ofFile);
+        //Interpreter machine = new Interpreter(sourceFile, ofFile);
 
         // Checks if the program has any errors and runs it
         int errorCode = machine.run();
 
         // Checks if the program ended successfully (errorCode=0) and then
-        // converts the OF file from ASCII to String.
+        // converts the OF file from ASCII to String and prints the result in the terminal.
         // This will only be useful if the intent of the program is to output any kind of text.
         if (errorCode==0) {
             String outputInTextFormat = machine.convertOfFileFromAsciiToText();
@@ -33,6 +35,6 @@ public class main {
         else if (errorCode == -3)
             System.out.println("Error. There is a command to read from IF file in the source code, but you have not provided an IF file.");
         else
-            System.out.println("\nProgram succesfully ended.");
+            System.out.println("\nProgram successfully ended.");
     }
 }
