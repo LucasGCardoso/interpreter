@@ -32,6 +32,7 @@ public class Interpreter {
     private String sourceFile;
     private String ofFile;
     private String ifFile;
+    private String ofFileContent;
 
     private String program;
     private int[] ifArray;
@@ -64,6 +65,10 @@ public class Interpreter {
         // turns the IF file into an array of int
         if (turnIFFileIntoArray(ifFile)==null) return;
         else this.ifArray = turnIFFileIntoArray(ifFile);
+
+        // Initializes the String the will contain the output of the "." command and
+        // later will be stored in the OF file
+        ofFileContent = "";
     }
 
     /**
@@ -84,6 +89,10 @@ public class Interpreter {
 
         // turns the SOURCE file into a single String
         this.program = readSource(sourceFile);
+
+        // Initializes the String the will contain the output of the "." command and
+        // later will be stored in the OF file
+        ofFileContent = "";
     }
 
 
@@ -164,12 +173,12 @@ public class Interpreter {
                     programPointer++;
                     break;
                 case '.':
-                    System.out.println(memory[dataPointer] + "\n");
-                    //writeInOF();
+                    ofFileContent = ofFileContent + memory[dataPointer] + "\n";
                     programPointer++;
                     break;
                 case '$':
                     memoryDump();
+                    writeInOF();
                     return 0;
                 default:
                     programPointer++;
@@ -235,7 +244,7 @@ public class Interpreter {
         Path pathTexto = Paths.get(ofFile);
 
         try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(pathTexto.getFileName(), Charset.forName("utf8")))) {
-            writer.println(memory[dataPointer] + "\n");
+            writer.println(ofFileContent);
         } catch (IOException x) {
             System.err.format("I/O Error: %s%n\n", x);
         }
@@ -374,15 +383,16 @@ public class Interpreter {
     }
 
     /**
-     * Prints in the screen the values stored in the memory
+     * Adds to the OF file String the values stored in the memory
      *
      */
     private void memoryDump(){
         dataPointer = 0;
-        //System.out.println("\nMemory:");
+
+        ofFileContent = ofFileContent + "\n\nMemory Dump:\n";
+
         for(int i=0; i<memory.length; i++){
-            //System.out.print(memory[i] + "; ");
-            writeInOF();
+            ofFileContent = ofFileContent + memory[dataPointer] + " ";
             dataPointer++;
         }
     }
