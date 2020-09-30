@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
+import java.util.Stack;
 
 /**
  * This class receives three files: SOURCE, IF and OF, and then uses them
@@ -27,7 +27,7 @@ public class Interpreter {
     private int dataPointer;
     private int programPointer;
     private int[] memory;
-    private int memorySize = 30;
+    private int memorySize = 1000;
 
     private String sourceFile;
     private String ofFile;
@@ -197,29 +197,28 @@ public class Interpreter {
     }
 
     /**
-     * This function will map which [ belongs to each ], keeping the position in the string
+     * This function will map which '[' belongs to each ']', keeping the position in the string
      *
      * @param program     the program that was read from the SOURCE file
      */
     private void mapSpecialChars(String program){
+        Stack<Integer> openChars = new Stack<Integer>();
         int count = 0;
 
         for(int i=0; i<program.length(); i++){
             if(program.charAt(i) == '[')
                 count++;
         }
+
         specialCharMap = new int[count][2];
         int matrixRow = 0;
+
         for(int i=0; i<program.length(); i++){
             if(program.charAt(i) == '['){
-                specialCharMap[matrixRow][0] = i;
-                matrixRow++;
+                openChars.push(i);
             }
-        }
-
-        matrixRow = 0;
-        for(int i=program.length()-1; i>0; i--){
             if(program.charAt(i) == ']'){
+                specialCharMap[matrixRow][0] = openChars.pop();
                 specialCharMap[matrixRow][1] = i;
                 matrixRow++;
             }
@@ -233,10 +232,10 @@ public class Interpreter {
      */
     private void writeInOF(){
         Path pathTexto = Paths.get(ofFile);
-        System.out.println("chamou write" + memory[dataPointer]);
+        System.out.println("chamou write " + memory[dataPointer]);
 
         try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(pathTexto.getFileName(), Charset.forName("utf8")))) {
-            writer.println(memory[dataPointer]);
+            writer.println(memory[dataPointer] + "\n");
         } catch (IOException x) {
             System.err.format("I/O Error: %s%n\n", x);
         }
@@ -319,7 +318,7 @@ public class Interpreter {
         return null;
     }
 
-// para eu testar os erros. estou aprendendo. não apaga
+// para eu testar os erros. estou aprendendo. não apaga - KK beleza
 /*
     catch (ArrayIndexOutOfBoundsException e) {
         System.err.println("Uso: AppExcecao3 <num1> <num2>");
@@ -379,9 +378,12 @@ public class Interpreter {
      *
      */
     private void memoryDump(){
-        System.out.println("\nMemory:");
+        dataPointer = 0;
+        //System.out.println("\nMemory:");
         for(int i=0; i<memory.length; i++){
-            System.out.print(memory[i] + "; ");
+            //System.out.print(memory[i] + "; ");
+            writeInOF();
+            dataPointer++;
         }
     }
 

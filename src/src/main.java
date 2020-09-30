@@ -4,9 +4,9 @@ public class main {
         // You should manually set the files paths here.
         // Ideally they should be in the root directory of the project.
         // The OF file will be created, so you can choose any name you want.
-        String sourceFile = "source hello.txt";
+        String sourceFile = "source";
         String ofFile = "of";
-        String ifFile = "if com zeros.txt";
+        String ifFile = "if.txt";
 
         // com IF file
         //Interpreter machine = new Interpreter(sourceFile, ifFile, ofFile);
