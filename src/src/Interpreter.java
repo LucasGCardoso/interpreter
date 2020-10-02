@@ -135,7 +135,7 @@ public class Interpreter {
      */
     public int run() {
         if(!checkSpecialChars(program)) return -1;
-        if(program.charAt(program.length()-1)!='$') return -2;
+        if(!checkForEndOfProgram()) return -2;
         mapSquareBrackets(program);
         while (true) {
             char command = program.charAt(programPointer);
@@ -206,7 +206,7 @@ public class Interpreter {
                     */
 
                     // In case the programmer used "," simply as a comment
-                    if (ifFile == null) {
+                    if (ifFile == null || ifArray.length==0) {
                         programPointer++;
                         break;
                     }
@@ -217,6 +217,9 @@ public class Interpreter {
                 case '.':
                     ofFileContent = ofFileContent + memory[dataPointer] + "\n";
                     ofFileContentReadableString = ofFileContentReadableString + Character.toString((char)memory[dataPointer]);
+
+                    // System.out.println(ofFileContentReadableString);
+
                     programPointer++;
                     break;
                 case '$':
@@ -373,7 +376,7 @@ public class Interpreter {
 
 
     /**
-     * reads the IF file to check how many values it has
+     * Reads the IF file to check how many values it has
      *
      * @param ifFile                the IF file
      * @exception IOException       on any I/O error
@@ -429,9 +432,27 @@ public class Interpreter {
 
     /**
      * Returns the content of the OF file in a readable format
+     *
+     * @return     the content of the OF file in String format
      */
     public String convertOfFileFromAsciiToText (){
         return ofFileContentReadableString;
     }
+
+
+    /**
+     * Check if the program has any $
+     *
+     * @return  true if the program has any ending command or false otherwise
+     */
+    public boolean checkForEndOfProgram(){
+        for (int i=0; i<program.length(); i++){
+            if (program.charAt(i)=='$') return true;
+        }
+
+        return false;
+    }
+
+
 
 }
