@@ -21,7 +21,7 @@ import java.util.Stack;
  * @author            Pedro Maia Rogoski
  * @author            Roberto Luís Rezende
  * @version           1.0
- * @since             2020-09-27
+ * @since             2020-10-02
  */
 public class Interpreter {
     private int dataPointer;
