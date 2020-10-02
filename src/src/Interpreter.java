@@ -127,7 +127,11 @@ public class Interpreter {
      * @return             0 if the program run successfully
      *                    -1 if it has unpaired [ and ]
      *                    -2 if it doesn't end with $
-     *                    -3 if used the command "," without providing an IF file
+     *                    -3 if used the command "," without providing an IF file - Since many BF programmers use comments with "," we decided to remove this error message from our interpreter. The code for this only commented, so you can use if you want.
+     *                    -4 if the program tries to access a memory index higher than the allocated memory
+     *                    -5 if the program tries to access a negative memory
+     *                    -6 if the program tries to read from the IF file but it has no more values to be read.  - Since many BF programmers use comments with "," we decided to remove this error message from our interpreter. The code for this only commented, so you can use if you want.
+     *
      */
     public int run() {
         if(!checkSpecialChars(program)) return -1;
@@ -138,10 +142,18 @@ public class Interpreter {
             switch (command){
                 case '>':
                     dataPointer++;
+
+                    // If the program has a logic error
+                    if (dataPointer>=memorySize) return -4;
+
                     programPointer++;
                     break;
                 case '<':
                     dataPointer--;
+
+                    // If the program has a logic error
+                    if (dataPointer<0) return -5;
+
                     programPointer++;
                     break;
                 case '+':
@@ -175,10 +187,30 @@ public class Interpreter {
                     }
                     break;
                 case ',':
+                    /*
+                    * At the end of our coding we decided to comment out this error message, since many programmers use "," in their comments.
+                    *
                     // In case you reach this command but there was no IF file provided by the user
                     if (ifFile==null) {
                         return -3;
                     }
+                    */
+
+                    /*
+                    * At the end of our coding we decided to comment out this error message, since many programmers use "," in their comments.
+                    *
+                    // In case the program tries to read a value from the IF array but the array is smaller than expected
+                    if (IFPointer >= ifArray.length) {
+                        return -6;
+                    }
+                    */
+
+                    // In case the programmer used "," simply as a comment
+                    if (ifFile == null) {
+                        programPointer++;
+                        break;
+                    }
+
                     readIF();
                     programPointer++;
                     break;

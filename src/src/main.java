@@ -6,15 +6,15 @@ public class main {
         // The OF file will be created, so you can choose any name you want.
         //String sourceFile = "chess.bf";
         //String sourceFile = "squares.bf";
-        String sourceFile = "source teste.txt";
+        String sourceFile = "hello.txt";
         String ofFile = "of";
         String ifFile = "if teste.txt";
 
         // If you want to use an IF file, please use this constructor
-        Interpreter machine = new Interpreter(sourceFile, ifFile, ofFile);
+        //Interpreter machine = new Interpreter(sourceFile, ifFile, ofFile);
 
         // If you don´t want to use an IF file, please use this constructor
-        //Interpreter machine = new Interpreter(sourceFile, ofFile);
+        Interpreter machine = new Interpreter(sourceFile, ofFile);
 
         // Checks if the program has any errors and runs it
         int errorCode = machine.run();
@@ -28,13 +28,21 @@ public class main {
         }
 
         // Treats the error code received from running the program
-        if (errorCode == -1)
-            System.out.println("Error. The program is badly written. It has at least one unpaired [ or ].");
-        else if (errorCode == -2)
-            System.out.println("Error. The program is badly written. It doesn´t end with $.");
-        else if (errorCode == -3)
-            System.out.println("Error. There is a command to read from IF file in the source code, but you have not provided an IF file.");
-        else
+        if (errorCode == 0)
             System.out.println("\nProgram successfully ended.");
+        else if (errorCode == -1)
+            System.err.println("Error. The program is badly written. It has at least one unpaired [ or ].");
+        else if (errorCode == -2)
+            System.err.println("Error. The program is badly written. It doesn´t end with $.");
+        else if (errorCode == -3)
+            System.err.println("Error. There is a command to read from IF file in the source code, but you have not provided an IF file.");
+        else if (errorCode == -4)
+            System.err.println("Error. Your program has a logic error and tried to access a memory index higher than the memory size.");
+        else if (errorCode == -5)
+            System.err.println("Error. Your program has a logic error and tried to access a negative memory index.");
+        else if (errorCode == -6)
+            System.err.println("Error. Your IF file needs to have more input values.");
+        else
+            System.err.println("\nError.");
     }
 }
