@@ -305,7 +305,7 @@ public class Interpreter {
      * @exception IOException           on any other error
      * @return                          a String with the content of the SOURCE file
      */
-    public String readSource(String source) {
+    private String readSource(String source) {
         Path path1 = Paths.get(source);
         String sourceStringyfied ="";
 
@@ -339,7 +339,7 @@ public class Interpreter {
      * @exception IOException           on any other error
      * @return                          an array with the IF file values
      */
-    public int [] turnIFFileIntoArray(String ifFile) {
+    private int [] turnIFFileIntoArray(String ifFile) {
         Path path1 = Paths.get(ifFile);
         int [] IFArray;
 
@@ -396,7 +396,7 @@ public class Interpreter {
      * @param line  the line in the IF file
      * @return      true if it is a int or false otherwise
      */
-    public static boolean isNumeric(String line) {
+    private static boolean isNumeric(String line) {
         try {
             Integer.parseInt(line);
             return true;
@@ -413,7 +413,7 @@ public class Interpreter {
      * @exception IOException       on any I/O error
      * @return                      the number os values in the IF file
      */
-    public int getSizeForTheIfFileArray (String ifFile) {
+    private int getSizeForTheIfFileArray (String ifFile) {
         Path path1 = Paths.get(ifFile);
         int size=0;
 
@@ -488,14 +488,12 @@ public class Interpreter {
      *
      * @return  true if the program has any ending command or false otherwise
      */
-    public boolean checkForEndOfProgram(){
+    private boolean checkForEndOfProgram(){
         for (int i=0; i<program.length(); i++){
             if (program.charAt(i)=='$') return true;
         }
 
         return false;
     }
-
-
 
 }
