@@ -5,10 +5,16 @@ public class main {
         // Ideally they should be in the root directory of the project.
         // The OF file will be created, so you can choose any name you want.
         //String sourceFile = "chess.bf";
+        //String sourceFile = "pi.bf";
+        //String sourceFile = "rot13.bf";
+        //String sourceFile = "sierpinski.bf";
         //String sourceFile = "squares.bf";
-        String sourceFile = "hello.txt";
+        String sourceFile = "squares2.bf";
+
         String ofFile = "of";
-        String ifFile = "if teste.txt";
+
+        String ifFile = "if teste";
+        //String ifFile = "rot 13 if file.bf";
 
         // If you want to use an IF file, please use this constructor
         //Interpreter machine = new Interpreter(sourceFile, ifFile, ofFile);

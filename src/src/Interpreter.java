@@ -357,13 +357,28 @@ public class Interpreter {
             while ((line = reader.readLine()) != null) {
                 if (!line.isEmpty()) {
                     line = line.trim();
-                    IFValue = Integer.parseInt(line);
-                    IFArray[index] = IFValue;
-                    index++;
+
+                    // if the value in the IF file is a number it is entered as a single value in the array
+                    if (isNumeric(line)) {
+                        IFValue = Integer.parseInt(line);
+                        IFArray[index] = IFValue;
+                        index++;
+                    }
+
+                    // if the value is a String it is entered as a sequence of bytes
+                    else {
+                        for (int i=0; i<line.length(); i++) {
+                            IFValue = (byte) line.charAt(i);
+                            IFArray[index] = IFValue;
+                            index++;
+                        }
+                    }
+
                 }
             }
 
             return IFArray;
+
         } catch (NoSuchFileException x) {
             System.err.format("IF File not found.\n", x);
         } catch (NumberFormatException x) {
@@ -372,6 +387,22 @@ public class Interpreter {
             System.err.format("I/O error: %s%n\n", x);
         }
         return null;
+    }
+
+
+    /**
+     * Checks if the line read in the IF file is a number
+     *
+     * @param line  the line in the IF file
+     * @return      true if it is a int or false otherwise
+     */
+    public static boolean isNumeric(String line) {
+        try {
+            Integer.parseInt(line);
+            return true;
+        } catch(NumberFormatException e){
+            return false;
+        }
     }
 
 
@@ -390,12 +421,24 @@ public class Interpreter {
             String line = null;
 
             while ((line = reader.readLine()) != null) {
+
                 if(!line.isEmpty()){
-                    size++;
+
+                    // if the value in the IF file is a number it is counted as a single entry in the array
+                    if (isNumeric(line)) {
+                        size++;
+                    }
+
+                    // if the value is a String it creates as many spaces as there are characters
+                    else {
+                        for (int i=0; i<line.length(); i++) {
+                            size++;
+                        }
+                    }
                 }
             }
 
-            return size;
+            return size+1;
 
         } catch (IOException x) {
             System.err.format("I/O Error: %s%n\n", x);
