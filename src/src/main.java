@@ -21,7 +21,7 @@ public class main {
         Interpreter machine = new Interpreter(sourceFile, ifFile, ofFile);
 
         // If you don´t want to use an IF file, please use this constructor
-        //sInterpreter machine = new Interpreter(sourceFile, ofFile);
+        // Interpreter machine = new Interpreter(sourceFile, ofFile);
 
         // Checks if the program has any errors and runs it
         int errorCode = machine.run();
