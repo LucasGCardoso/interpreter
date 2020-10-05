@@ -214,14 +214,13 @@ public class Interpreter {
                     readIF();
                     programPointer++;
                     break;
+
                 case '.':
                     ofFileContent = ofFileContent + memory[dataPointer] + "\n";
                     ofFileContentReadableString = ofFileContentReadableString + Character.toString((char)memory[dataPointer]);
-
-                    // System.out.println(ofFileContentReadableString);
-
                     programPointer++;
                     break;
+
                 case '$':
                     memoryDump();
                     writeInOF();
