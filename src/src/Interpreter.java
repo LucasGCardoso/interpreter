@@ -392,7 +392,7 @@ public class Interpreter {
      * @param line  the line in the IF file
      * @return      true if it is a int or false otherwise
      */
-    private static boolean isNumeric(String line) {
+    private boolean isNumeric(String line) {
         try {
             Integer.parseInt(line);
             return true;
