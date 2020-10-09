@@ -119,9 +119,6 @@ public class Interpreter {
      * .    writes in the OF file the byte referenced by the data pointer.
      * $    ends the program and dumps the memory in the OF file.
      *
-     * #    We added this optional command. It will ignore a whole line in the SOURCE file.
-     *      It is used to create comment lines.
-     *
      *      Any other command is ignored and the program pointer is incremented.
      *
      * @return             0 if the program run successfully
@@ -313,7 +310,7 @@ public class Interpreter {
 
             while ((line = reader.readLine()) != null) {
 
-                if (!line.isEmpty() && line.charAt(0) !='#') {
+                if (!line.isEmpty()) {
                     line = line.trim();
                     sourceStringyfied = sourceStringyfied + line;
                 }
