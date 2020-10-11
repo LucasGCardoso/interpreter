@@ -14,8 +14,7 @@ public class main {
 
         String ofFile = "of";
 
-        //String ifFile = "if teste.bf";
-        String ifFile = "rot 13 if file.bf";
+        //String ifFile = "rot 13 if file.bf";
 
         // If you want to use an IF file, please use this constructor
         //Interpreter machine = new Interpreter(sourceFile, ifFile, ofFile);
